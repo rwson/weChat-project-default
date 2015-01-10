@@ -491,22 +491,3 @@ function preloadImage(imgurls, callback) {
 
 }
 
-/*
-
-(function(w,u){
-    var $jxBox = {
-        "ele":function(selector){
-            return $(selector);
-        },
-        "extend":function(json,protytype){
-            for(var i in json){
-                if(json[i] && $.isFunction(json[i]))
-                $jxBox[i] = json[i];
-            }
-        }
-    };
-
-    w.$jxBox = $jxBox;
-})(window,undefined);
-
-*/
