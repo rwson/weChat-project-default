@@ -75,10 +75,30 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
+.textL{
+    text-align: left;
+}
+
+.textR{
+    text-align: right;
+}
+
 .absoluteC {
     position: absolute;
     left: 50%;
     top: 50%;
+}
+
+.block-ele{
+    display: block;
+}
+
+.inline-ele{
+    display: inline;
+}
+
+.hide{
+    display: none;
 }
 
 .center {
