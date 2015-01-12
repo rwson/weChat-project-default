@@ -2,7 +2,7 @@
  *
  *  build by rwson @ 2015-01-10
  *
- *  完成微信端的一些自适应屏幕功能
+ *  完成微信端的一些自适应屏幕功能(css3中的缩放特性)
  */
 
 $(function () {
@@ -67,6 +67,7 @@ $(function () {
         "http://c.hiphotos.baidu.com/image/pic/item/730e0cf3d7ca7bcbc0ac8422bc096b63f724a8ec.jpg",
         "http://g.hiphotos.baidu.com/image/pic/item/9a504fc2d562853553a9290e93ef76c6a7ef6350.jpg"
     ];
+
     preloadImage(imgs, function () {
     });
 
