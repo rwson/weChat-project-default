@@ -79,19 +79,19 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
 }
 
-.relative-ele{
+.relative-ele {
     position: relative;
 }
 
-.block-ele{
+.block-ele {
     display: block;
 }
 
-.inline-ele{
+.inline-ele {
     display: inline;
 }
 
-.hide-ele{
+.hide-ele {
     display: none;
 }
 
