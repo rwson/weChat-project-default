@@ -432,6 +432,14 @@ function array2obj(array) {
     return object;
 }
 
+/**
+ *
+ * @param show
+ * @param text
+ *
+ * 将screenalert遮罩层加到all里面，因为all是页面的实际高度，而不是屏幕高度，不会出现超出屏幕的地方显示不出的bug
+ */
+
 function screenalert(show, text) {
     if (show) {
         var alertdom = $('<div class="screenalert">' +
@@ -440,14 +448,14 @@ function screenalert(show, text) {
             text +
             '</div></div></div>');
 
-        if ($("body .screenalert")[0]) {
-            $(".screenalert").replaceWith(alertdom);
+        if ($("div#all .screenalert")[0]) {
+            $("div.screenalert").replaceWith(alertdom);
         } else {
-            $("body").append(alertdom);
+            $("div#all").append(alertdom);
         }
 
     } else {
-        $("body .screenalert").remove();
+        $("div#all .screenalert").remove();
     }
 }
 

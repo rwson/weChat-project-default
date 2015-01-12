@@ -45,12 +45,16 @@ $(function () {
     });
 
     $("html").css({"width": w});
-    $("html").css({"height": h});
-    $("body").css({"width": w});
-    $("body").css({"height": h});
 
+    $("body").css({"width": w});
+
+    /*
+    $("html").css({"height": h});
+    $("body").css({"height": h});
     $(".zoomer").css({"width": tw});
     $(".zoomer").css({"height": th});
+    */
+    //  这边不建议指定高度，在当页面高度超过屏幕高度时，如果加了overflow;hidden;会导致页面滑动失效的问题
 
     $(".wrap").css({"height": th});
 
