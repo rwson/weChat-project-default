@@ -181,7 +181,6 @@ h1, h2, h3, h4, h5, h6 {
     background: #e4e4e4;
     border-radius: 12px;
     padding: 32px;
-    overflow: hidden;
 }
 
 #alerw_div .title {
@@ -277,7 +276,6 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     top: 0;
     left: 0;
-    overflow: visible;
 }
 
 .wrap {
@@ -285,7 +283,6 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     top: 0;
     left: 0;
-    overflow: hidden;
     width: 640px;
     z-index: 0;
 }
