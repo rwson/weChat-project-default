@@ -15,10 +15,6 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     background: transparent;
 }
 
-html {
-    overflow-x: hidden;
-}
-
 body, p, span {
     font: normal 12px/24px "Arial", "Microsoft Yahei";
     color: #000;

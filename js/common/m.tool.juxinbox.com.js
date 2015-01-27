@@ -4,6 +4,7 @@
  *
  * update
  *  rwson  @ 2015-01-10
+ *  rwson  @ 2015-01-17 增加animationEnd/transitionEnd事件的兼容处理
  *
  *  一些工具方法
  */
@@ -496,6 +497,50 @@ function preloadImage(imgurls, callback) {
     } else {
         callback && $.isFunction(callback) && callback();
     }
-
 }
 
+/**
+ *
+ * @param callback Function Required
+ *
+ * CSS3 中的animationEnd事件兼容处理
+ */
+
+$.fn.animateEnd = function(callback){
+    var names = {
+        "Moz" : "animationend"
+        ,"webkit" : "webkitAnimationEnd"
+        ,"ms" : "MSAnimationEnd"
+        ,"O" : "oAnimationEnd"
+    };
+    for(var i in names){
+        if(names[i]){
+            this.on(names[i],function(){
+                callback && $.isFunction(callback) && callback();
+            });
+        }
+    }
+};
+
+
+/**
+ *
+ * @param callback Function Required
+ *
+ * CSS3 中的transitionEnd事件兼容处理
+ */
+$.fn.transitionEnd = function(callback){
+    var names = {
+        "Moz" : "transitionend"
+        ,"webkit" : "webkitTransitionEnd"
+        ,"ms" : "MSTransitionEnd"
+        ,"O" : "oTransitionEnd"
+    };
+    for(var i in names){
+        if(names[i]){
+            this.on(names[i],function(){
+                callback && $.isFunction(callback) && callback();
+            });
+        }
+    }
+};
