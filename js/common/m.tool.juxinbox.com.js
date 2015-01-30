@@ -438,7 +438,7 @@ function array2obj(array) {
  * @param show
  * @param text
  *
- * 将screenalert遮罩层加到all里面，因为all是页面的实际高度，而不是屏幕高度，不会出现超出屏幕的地方显示不出的bug
+ * 将screenalert遮罩层加到all里面,修复断层的情况
  */
 
 function screenalert(show, text) {
@@ -458,6 +458,10 @@ function screenalert(show, text) {
     } else {
         $("div#all .screenalert").remove();
     }
+
+    $("#loading").css({
+        "height":$(document).height() > $("body").height() ? $(document).height() : $("body").height()
+    });
 }
 
 /**
