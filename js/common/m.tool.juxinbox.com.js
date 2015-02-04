@@ -2,41 +2,309 @@
  *
  *  build by bsawang @ 2013-11-20
  *
- * update
- *  rwson  @ 2015-01-10
+ * history
+ *  rwson  @ 2015-01-10 二次封装，修复bug
  *  rwson  @ 2015-01-17 增加animationEnd/transitionEnd事件的兼容处理
+ *  rwson  @ 2015-02-04 修复bug，增加百度touch.js插件，单体模式创建jxTool对象，并提供属性方法
  *
  *  一些工具方法
+ *
  */
 
-//设置cookie
-function SetCookie(name, value) {
-
-    var Days = 180;
-    var exp = new Date();
-    exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
-    document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
-
+if (!window.jxTool) {
+    jxTool = {};
+    window.jxTool = top.jxTool = jxTool;
 }
 
-//读取cookie
-function getCookie(name) {
+jxTool = {
+    /**
+     *
+     * @param key required
+     * @param val required
+     * @param time optional
+     * 设置cookie，并可以自定义保存时间
+     *
+     */
+    "setCookie": function (key, val, time) {
+        var days = time || 30,
+            date = new Date();
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+        document.cookie = key + "=" + escape(val) + ";expires=" + data.toGMTString();
+    },
+    "getCookie": function (key) {
+        var arr, reg = new RegExp("(^| )" + key + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    },
+    "deleteCookie": function (key) {
+        var date = new Date();
+        date.setTime(date.getTime() - 1);
+        var cval = this.getCookie(key);
+        if (cval != null) {
+            document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+        }
+    },
 
-    var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
-    if (arr != null) return unescape(arr[2]);
-    return null;
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 判断是否为空
+     *
+     */
+    "isNull":function(obj){
+        return (typeof obj == "undefined") || (a == null);
+    },
 
-}
+    /**
+     *
+     * @param obj required
+     * @returns {boolean}
+     * 根据传入参数的构造器判断是否为一个日期对象
+     *
+     */
+    "isDate":function(obj){
+        return (obj.constructor == Date);
+    },
 
-//删除cookie
-function delCookie(name) {
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 根据传入参数验证是否为数字,最少一位
+     *
+     */
+    "isNumber":function(string){
+        return (/[\d]{1,}/).test(string);
+    },
 
-    var exp = new Date();
-    exp.setTime(exp.getTime() - 1);
-    var cval = getCookie(name);
-    if (cval != null) document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 根据传入参数验证是否为浮点数
+     *
+     */
+    "isFloat":function(string){
+        return (/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/).test(string);
+    },
 
-}
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 根据传入参数验证是否为整数,最少一位
+     *
+     */
+    "isInt":function(string){
+        return (/^-?\d+$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 根据传入参数验证是否为小写字母,最少一位
+     *
+     */
+    "isLowerCase":function(string){
+        return (/^[a-z]+$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 根据传入参数验证是否为大写字母,最少一位
+     *
+     */
+    "isUpperCase":function(string){
+        return (/^[A-Z]+$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 根据传入参数验证是否为字母,最少一位
+     *
+     */
+    "isLetter":function(string){
+        return (/^[a-zA-Z]+$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 根据传入参数验证是否为中文,最少一位
+     *
+     */
+    "isChinese":function(string){
+        return (/^[\u4e00-\u9fa5]+$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 根据传入参数验证是否为ip地址
+     *
+     */
+    "isIp":function(string){
+        if((/^([0-9]{1,3}\.){3}[0-9]{1,3}$/).test(string)){
+            var stringArr = string.split("."),
+                res = true;
+            $.each(stringArr,function(i,j){
+                if($p.isNumber(j) && parseInt(j) > 0 && j < 255){
+                }else{
+                    res = false;
+                }
+            });
+            return res;
+        }else{
+            return false;
+        }
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 判断是否为字符串
+     *
+     */
+    "isWord":function(string){
+        return /^[a-zA-Z0-9_]+$/.test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 判断是否为邮箱
+     *
+     */
+    "isEmail":function(string){
+        return (/^[a-z]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 判断是否为手机号
+     *
+     */
+    "isMobile":function(string){
+        return (/^1\d{10}$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 判断是否为网址
+     *
+     */
+    "isUrl":function(string){
+        return (/^[A-Za-z]+:\/\/[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\?\/.=]+$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 判断是否为身份证号
+     *
+     */
+    "isIdNumber":function(string){
+        return (/^[\d]{15}$/).test(string) || (/[^\d]{17}[\d|X|x]{1}$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 判断是否为QQ号
+     *
+     */
+    "isQQ":function(string){
+        return (/^[1-9]{1}[\d]{4,11}$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 判断是否为电话号
+     *
+     */
+    "isTelephone":function(string){
+        return (/^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {boolean}
+     * 判断是否为邮编
+     *
+     */
+    "isPostalCode":function(string){
+        return (/^[0-9]{6}$/).test(string);
+    },
+
+    /**
+     *
+     * @param string required
+     * @returns {number}
+     * 返回字符串长度，中文算2个字符
+     *
+     */
+    "stringLength":function(string){
+        var length = 0;
+        for(var i = 0;i < string.length;i ++){
+            if(string.charCodeAt(i) > 255){
+                length += 2;
+            }else{
+                length ++;
+            }
+        }
+        return length;
+    },
+
+    /**
+     *
+     * @param min required
+     * @param max required
+     * @returns {number}
+     * 根据传入的最值区间返回区间内任意值
+     *
+     */
+    "getRangeRandom":function(min,max){
+        return (Math.floor(Math.random() * (max - min)) + min);
+    },
+
+    /**
+     *
+     * @param opt optional
+     * 自定义弹出层，用于显示通知或其他信息
+     *
+     */
+    "dialog":function(opt){
+        var defaults = {
+            "title":"通知",
+            "text":"恭喜你，中奖了！",
+            "btn":["confirm","cancel"]
+            },
+            opts = $.extend({},defaults,opt||{}),
+            dialogHtml = "";
+    }
+};
+
 
 //获取网址参数
 function getQueryString(name) {
@@ -324,121 +592,12 @@ Date.prototype.format = function (format) {
     return format;
 };
 
-function Aj(json) {
-    alert(JSON.stringify(json));
-}
-
-function showShareTip(type) {
-
-    var pictype = type || "share";
-
-    var tipdom = $('<div id="jxtip">' +
-        '<img src="http://www.juxinbox.com/img/jxshare/jx' + pictype + '.png" />' +
-        '<a class="jxtiplogo"></a>' +
-        '</div>');
-
-    tipdom.css({
-        "width": "100%",
-        "height": "100%",
-        "backgroundColor": "rgba(102,102,102,0.98)",
-        "position": "absolute",
-        "left": "0",
-        "top": "0",
-        "zIndex": "99999"
-    });
-
-    $("img", tipdom).css({
-        "width": "100%",
-        "position": "absolute"
-    });
-
-    $(".jxtiplogo", tipdom).css({
-        "display": "block",
-        "width": "188px",
-        "height": "20px",
-        "backgroundImage": "url('http://www.juxinbox.com/img/jxshare/jxlogo.png')",
-        "backgroundSize": "contain",
-        "position": "absolute",
-        "marginLeft": "-94px",
-        "left": "50%",
-        "bottom": "40px"
-    });
-
-    tipdom.click(function () {
-        $(this).remove();
-    });
-
-    $("body").append(tipdom);
-}
-
-
-function obj2query(data, encode) {
-
-    var querystr = "";
-    var objarr = [];
-
-    if (encode) {
-        $.each(data, function (i, p) {
-            objarr.push(i + "=" + encodeURIComponent(encodeURIComponent(p)));
-        });
-    } else {
-        $.each(data, function (i, p) {
-            objarr.push(i + "=" + ((p)));
-        });
-    }
-
-    querystr = objarr.join("&");
-    return querystr;
-}
-
-function query2obj(query, encode) {
-
-    var obj = {};
-    var objarr = [];
-    objarr = query.split("&");
-
-    if (encode) {
-
-        $.each(objarr, function (i, p) {
-            obj[objarr[i].split("=")[0]] = decodeURIComponent(decodeURIComponent(objarr[i].split("=")[1]));
-        });
-
-    } else {
-
-        $.each(objarr, function (i, p) {
-            obj[objarr[i].split("=")[0]] = ((objarr[i].split("=")[1]));
-        });
-
-    }
-    return obj;
-}
-
-
-function obj2array(object) {
-
-    var objectArray = [];
-    for (var o in object) {
-
-        objectArray.push({"name": o, "value": object[o]});
-    }
-    return objectArray;
-}
-
-
-function array2obj(array) {
-    var object = {};
-    $.each(array, function (i, p) {
-        object[p.name] = p.value;
-    });
-    return object;
-}
-
 /**
  *
  * @param show
  * @param text
  *
- * 将screenalert遮罩层加到all里面,修复断层的情况
+ * 给层做一个高度的自适应
  */
 
 function screenalert(show, text) {
@@ -449,18 +608,18 @@ function screenalert(show, text) {
             text +
             '</div></div></div>');
 
-        if ($("div#all .screenalert")[0]) {
-            $("div.screenalert").replaceWith(alertdom);
+        if ($("body .screenalert")[0]) {
+            $("div .screenalert").replaceWith(alertdom);
         } else {
-            $("div#all").append(alertdom);
+            $("body").append(alertdom);
         }
 
     } else {
-        $("div#all .screenalert").remove();
+        $("div.screenalert").remove();
     }
 
     $("#loading").css({
-        "height":$(document).height() > $("body").height() ? $(document).height() : $("body").height()
+        "height": $(document).height() > $("body").height() ? $(document).height() : $("body").height()
     });
 }
 
@@ -473,25 +632,18 @@ function screenalert(show, text) {
  */
 
 function preloadImage(imgurls, callback) {
-
     if (imgurls.length > 0) {
         loading("start");
         screenalert(true, "正在加载图片，请稍候 ( 0 / " + imgurls.length + " )");
-
         var loadedimgs = [];
         $.each(imgurls, function (i, imgurl) {
-
             var img = new Image();
             img.src = imgurl;
             img.onload = function () {
-
                 loadedimgs.push(imgurl);
-
                 $(".info").text("正在加载图片，请稍候 （ " + loadedimgs.length + " / " + imgurls.length + " ）");
                 if (loadedimgs.length == imgurls.length) {
-
                     $(".info").text("加载完成");
-
                     loading("stop");
                     screenalert(false);
                     callback && $.isFunction(callback) && callback();
@@ -510,16 +662,13 @@ function preloadImage(imgurls, callback) {
  * CSS3 中的animationEnd事件兼容处理
  */
 
-$.fn.animateEnd = function(callback){
+$.fn.animateEnd = function (callback) {
     var names = {
-        "Moz" : "animationend"
-        ,"webkit" : "webkitAnimationEnd"
-        ,"ms" : "MSAnimationEnd"
-        ,"O" : "oAnimationEnd"
+        "Moz": "animationend", "webkit": "webkitAnimationEnd", "ms": "MSAnimationEnd", "O": "oAnimationEnd"
     };
-    for(var i in names){
-        if(names[i]){
-            this.on(names[i],function(){
+    for (var i in names) {
+        if (names[i]) {
+            this.on(names[i], function () {
                 callback && $.isFunction(callback) && callback();
             });
         }
@@ -533,18 +682,30 @@ $.fn.animateEnd = function(callback){
  *
  * CSS3 中的transitionEnd事件兼容处理
  */
-$.fn.transitionEnd = function(callback){
+$.fn.transitionEnd = function (callback) {
     var names = {
-        "Moz" : "transitionend"
-        ,"webkit" : "webkitTransitionEnd"
-        ,"ms" : "MSTransitionEnd"
-        ,"O" : "oTransitionEnd"
+        "Moz": "transitionend", "webkit": "webkitTransitionEnd", "ms": "MSTransitionEnd", "O": "oTransitionEnd"
     };
-    for(var i in names){
-        if(names[i]){
-            this.on(names[i],function(){
+    for (var i in names) {
+        if (names[i]) {
+            this.on(names[i], function () {
                 callback && $.isFunction(callback) && callback();
             });
         }
     }
 };
+
+/**
+ *
+ * 阻止页面滚动
+ */
+function preventScroll() {
+    $(document).bind("touchmove", function (ev) {
+        var oEv = ev || event;
+        if (oEv.preventDefault) {
+            oEv.preventDefault();
+        } else {
+            return false;
+        }
+    });
+}

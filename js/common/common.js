@@ -3,6 +3,7 @@
  *  build by rwson @ 2015-01-10
  *
  *  完成微信端的一些自适应屏幕功能(css3中的缩放特性)
+ *
  */
 
 $(function () {
@@ -45,21 +46,22 @@ $(function () {
     });
 
     $("html").css({"width": w});
-
     $("body").css({"width": w});
-
-    $("html").css({"height": h});
-    $("body").css({"height": h});
     $(".zoomer").css({"width": tw});
-    $(".zoomer").css({"height": th});
-    //  这边不建议指定高度，在当页面高度超过屏幕高度时，如果加了overflow;hidden;会导致页面滑动失效的问题
 
-    $(".wrap").css({"height": th});
+    if($("div.full-screen").length > 0){
+        $("html").css({"height": h});
+        $("body").css({"height": h});
+        $(".zoomer").css({"height": th});
+        $(".wrap").css({"height": th});
+    }
+    /*
+    *   在页面上制定了全屏时，再应用高度值
+    * */
 
     var imgs = [
         "img/common/loading.gif",
         "img/common/pop_close.png",
-        "http://h.hiphotos.baidu.com/image/pic/item/082sda3dd54564e9258e653d8e39e82d158ccbf4e53.jpg12312sada",
         "http://c.hiphotos.baidu.com/image/pic/item/a71ea8d3fd1f4134c5f15073271f95cad0c85efc.jpg",
         "http://f.hiphotos.baidu.com/image/pic/item/aab219ebc4b74543a95f4ed0c41c178a82b9011464.jpg",
         "http://c.hiphotos.baidu.com/image/pic/item/730e0cf3d7ca7bcbc0ac8422bc096b63f724a8ec.jpg",
