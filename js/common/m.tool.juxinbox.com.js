@@ -6,6 +6,7 @@
  *  rwson  @ 2015-01-10 二次封装，修复bug
  *  rwson  @ 2015-01-17 增加animationEnd/transitionEnd事件的兼容处理
  *  rwson  @ 2015-02-04 修复bug，增加百度touch.js插件，单体模式创建jxTool对象，并提供属性方法
+ *  rwson  @ 2015-02-06 修复bug，增加各类型浏览器判断、音乐播放器，并提供属性方法，简化调用
  *
  *  一些工具方法
  *
@@ -16,306 +17,347 @@ if (!window.jxTool) {
     window.jxTool = top.jxTool = jxTool;
 }
 
-jxTool = {
-    /**
-     *
-     * @param key required
-     * @param val required
-     * @param time optional
-     * 设置cookie，并可以自定义保存时间
-     *
-     */
-    "setCookie": function (key, val, time) {
-        var days = time || 30,
-            date = new Date();
-        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-        document.cookie = key + "=" + escape(val) + ";expires=" + data.toGMTString();
-    },
-    "getCookie": function (key) {
-        var arr, reg = new RegExp("(^| )" + key + "=([^;]*)(;|$)");
-        if (arr = document.cookie.match(reg))
-            return unescape(arr[2]);
-        else
-            return null;
-    },
-    "deleteCookie": function (key) {
-        var date = new Date();
-        date.setTime(date.getTime() - 1);
-        var cval = this.getCookie(key);
-        if (cval != null) {
-            document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
-        }
+var browser = {
+        versions: function () {
+            var u = navigator.userAgent, app = navigator.appVersion;
+            return {//移动终端浏览器版本信息
+                "trident": u.indexOf("Trident") > -1, //IE内核
+                "presto": u.indexOf("Presto") > -1, //opera内核
+                "webKit": u.indexOf("AppleWebKit") > -1, //苹果、谷歌内核
+                "gecko": u.indexOf("Gecko") > -1 && u.indexOf("KHTML") == -1, //火狐内核
+                "mobile": !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/), //是否为移动终端
+                "ios": !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                "android": u.indexOf("Android") > -1 || u.indexOf("Linux") > -1, //android终端或者uc浏览器
+                "iPhone": u.indexOf("iPhone") > -1 || u.indexOf("Mac") > -1, //是否为iPhone或者QQHD浏览器
+                "iPad": u.indexOf("iPad") > -1, //是否iPad
+                "webApp": u.indexOf("Safari") == -1 //是否web应该程序，没有头部与底部
+            };
+        }(),
+        language: (navigator.browserLanguage || navigator.language).toLowerCase()
     },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 判断是否为空
-     *
-     */
-    "isNull":function(obj){
-        return (typeof obj == "undefined") || (a == null);
-    },
+    jxTool = {
+        /**
+         *
+         * @param key required
+         * @param val required
+         * @param time optional
+         * 设置cookie，并可以自定义保存时间
+         *
+         */
+        "setCookie": function (key, val, time) {
+            var days = time || 30,
+                date = new Date();
+            date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+            document.cookie = key + "=" + escape(val) + ";expires=" + data.toGMTString();
+        },
 
-    /**
-     *
-     * @param obj required
-     * @returns {boolean}
-     * 根据传入参数的构造器判断是否为一个日期对象
-     *
-     */
-    "isDate":function(obj){
-        return (obj.constructor == Date);
-    },
+        /**
+         *
+         * @param key
+         * @returns {*}
+         * 根据当前传入的值获取相应的cookie
+         *
+         */
+        "getCookie": function (key) {
+            var arr, reg = new RegExp("(^| )" + key + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 根据传入参数验证是否为数字,最少一位
-     *
-     */
-    "isNumber":function(string){
-        return (/[\d]{1,}/).test(string);
-    },
+        /**
+         *
+         * @param key
+         * 根据当前传入的key值删除相应的
+         *
+         */
+        "deleteCookie": function (key) {
+            var date = new Date();
+            date.setTime(date.getTime() - 1);
+            var cval = this.getCookie(key);
+            if (cval != null) {
+                document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+            }
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 根据传入参数验证是否为浮点数
-     *
-     */
-    "isFloat":function(string){
-        return (/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/).test(string);
-    },
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 判断是否为空
+         *
+         */
+        "isNull": function (obj) {
+            return (typeof obj == "undefined") || (obj == null);
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 根据传入参数验证是否为整数,最少一位
-     *
-     */
-    "isInt":function(string){
-        return (/^-?\d+$/).test(string);
-    },
+        /**
+         *
+         * @param obj required
+         * @returns {boolean}
+         * 根据传入参数的构造器判断是否为一个日期对象
+         *
+         */
+        "isDate": function (obj) {
+            return (obj.constructor == Date);
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 根据传入参数验证是否为小写字母,最少一位
-     *
-     */
-    "isLowerCase":function(string){
-        return (/^[a-z]+$/).test(string);
-    },
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 根据传入参数验证是否为数字,最少一位
+         *
+         */
+        "isNumber": function (string) {
+            return (/[\d]{1,}/).test(string);
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 根据传入参数验证是否为大写字母,最少一位
-     *
-     */
-    "isUpperCase":function(string){
-        return (/^[A-Z]+$/).test(string);
-    },
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 根据传入参数验证是否为浮点数
+         *
+         */
+        "isFloat": function (string) {
+            return (/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/).test(string);
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 根据传入参数验证是否为字母,最少一位
-     *
-     */
-    "isLetter":function(string){
-        return (/^[a-zA-Z]+$/).test(string);
-    },
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 根据传入参数验证是否为整数,最少一位
+         *
+         */
+        "isInt": function (string) {
+            return (/^-?\d+$/).test(string);
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 根据传入参数验证是否为中文,最少一位
-     *
-     */
-    "isChinese":function(string){
-        return (/^[\u4e00-\u9fa5]+$/).test(string);
-    },
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 根据传入参数验证是否为小写字母,最少一位
+         *
+         */
+        "isLowerCase": function (string) {
+            return (/^[a-z]+$/).test(string);
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 根据传入参数验证是否为ip地址
-     *
-     */
-    "isIp":function(string){
-        if((/^([0-9]{1,3}\.){3}[0-9]{1,3}$/).test(string)){
-            var stringArr = string.split("."),
-                res = true;
-            $.each(stringArr,function(i,j){
-                if($p.isNumber(j) && parseInt(j) > 0 && j < 255){
-                }else{
-                    res = false;
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 根据传入参数验证是否为大写字母,最少一位
+         *
+         */
+        "isUpperCase": function (string) {
+            return (/^[A-Z]+$/).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 根据传入参数验证是否为字母,最少一位
+         *
+         */
+        "isLetter": function (string) {
+            return (/^[a-zA-Z]+$/).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 根据传入参数验证是否为中文,最少一位
+         *
+         */
+        "isChinese": function (string) {
+            return (/^[\u4e00-\u9fa5]+$/).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 根据传入参数验证是否为ip地址
+         *
+         */
+        "isIp": function (string) {
+            if ((/^([0-9]{1,3}\.){3}[0-9]{1,3}$/).test(string)) {
+                var stringArr = string.split("."),
+                    res = true;
+                $.each(stringArr, function (i, j) {
+                    if (jxTool.isNumber(j) && parseInt(j) > 0 && j < 255) {
+                    } else {
+                        res = false;
+                    }
+                });
+                return res;
+            } else {
+                return false;
+            }
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 判断是否为字符串
+         *
+         */
+        "isWord": function (string) {
+            return /^[a-zA-Z0-9_]+$/.test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 判断是否为邮箱
+         *
+         */
+        "isEmail": function (string) {
+            return (/^[a-z]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 判断是否为手机号
+         *
+         */
+        "isMobile": function (string) {
+            return (/^1\d{10}$/).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 判断是否为网址
+         *
+         */
+        "isUrl": function (string) {
+            return (/^[A-Za-z]+:\/\/[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\?\/.=]+$/).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 判断是否为身份证号
+         *
+         */
+        "isIdNumber": function (string) {
+            return (/^[\d]{15}$/).test(string) || (/[^\d]{17}[\d|X|x]{1}$/).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 判断是否为QQ号
+         *
+         */
+        "isQQ": function (string) {
+            return (/^[1-9]{1}[\d]{4,11}$/).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 判断是否为电话号
+         *
+         */
+        "isTelephone": function (string) {
+            return (/^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {boolean}
+         * 判断是否为邮编
+         *
+         */
+        "isPostalCode": function (string) {
+            return (/^[0-9]{6}$/).test(string);
+        },
+
+        /**
+         *
+         * @param string required
+         * @returns {number}
+         * 返回字符串长度，中文算2个字符
+         *
+         */
+        "stringLength": function (string) {
+            var length = 0;
+            for (var i = 0; i < string.length; i++) {
+                if (string.charCodeAt(i) > 255) {
+                    length += 2;
+                } else {
+                    length++;
                 }
-            });
-            return res;
-        }else{
-            return false;
-        }
-    },
+            }
+            return length;
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 判断是否为字符串
-     *
-     */
-    "isWord":function(string){
-        return /^[a-zA-Z0-9_]+$/.test(string);
-    },
+        /**
+         *
+         * @param min required
+         * @param max required
+         * @returns {number}
+         * 根据传入的最值区间返回区间内任意值
+         *
+         */
+        "getRangeRandom": function (min, max) {
+            return (Math.floor(Math.random() * (max - min)) + min);
+        },
 
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 判断是否为邮箱
-     *
-     */
-    "isEmail":function(string){
-        return (/^[a-z]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/i).test(string);
-    },
-
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 判断是否为手机号
-     *
-     */
-    "isMobile":function(string){
-        return (/^1\d{10}$/).test(string);
-    },
-
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 判断是否为网址
-     *
-     */
-    "isUrl":function(string){
-        return (/^[A-Za-z]+:\/\/[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\?\/.=]+$/).test(string);
-    },
-
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 判断是否为身份证号
-     *
-     */
-    "isIdNumber":function(string){
-        return (/^[\d]{15}$/).test(string) || (/[^\d]{17}[\d|X|x]{1}$/).test(string);
-    },
-
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 判断是否为QQ号
-     *
-     */
-    "isQQ":function(string){
-        return (/^[1-9]{1}[\d]{4,11}$/).test(string);
-    },
-
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 判断是否为电话号
-     *
-     */
-    "isTelephone":function(string){
-        return (/^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/).test(string);
-    },
-
-    /**
-     *
-     * @param string required
-     * @returns {boolean}
-     * 判断是否为邮编
-     *
-     */
-    "isPostalCode":function(string){
-        return (/^[0-9]{6}$/).test(string);
-    },
-
-    /**
-     *
-     * @param string required
-     * @returns {number}
-     * 返回字符串长度，中文算2个字符
-     *
-     */
-    "stringLength":function(string){
-        var length = 0;
-        for(var i = 0;i < string.length;i ++){
-            if(string.charCodeAt(i) > 255){
-                length += 2;
-            }else{
-                length ++;
+        /**
+         *
+         * @param opt required
+         * 创建音乐播放器
+         *
+         */
+        "musicPlayer": function (opt) {
+            var defaults = {
+                    "music": "music/small-apple.mp3",
+                    "autoPlay": true,
+                    "controller": true
+                },
+                opts = $.extend({}, defaults, opt || {}),
+                music = $("<audio id='mp3Player' style='display:none;width:0;height:0;opacity:0;' autoplay='autoplay'> + <source src='" + opts["music"] + "' type='audio/mpeg'>"),
+                controller = $("<div class='mp3controller wait absolute'></div>");
+            $("div.zoomer").append(music);
+            if (opts["autoPlay"]) {
+                $(music).ready(function () {
+                    document.getElementById("mp3Player").play();
+                });
+            }
+            if (opts["controller"]) {
+                $("div.zoomer").append(controller);
+                $("div.mp3controller").click(function () {
+                    if (document.getElementById("mp3Player").paused) {
+                        $(this).removeClass("pause");
+                        document.getElementById("mp3Player").play();
+                    } else {
+                        $(this).addClass("pause");
+                        document.getElementById("mp3Player").pause();
+                    }
+                });
             }
         }
-        return length;
-    },
-
-    /**
-     *
-     * @param min required
-     * @param max required
-     * @returns {number}
-     * 根据传入的最值区间返回区间内任意值
-     *
-     */
-    "getRangeRandom":function(min,max){
-        return (Math.floor(Math.random() * (max - min)) + min);
-    },
-
-    /**
-     *
-     * @param opt optional
-     * 自定义弹出层，用于显示通知或其他信息
-     *
-     */
-    "dialog":function(opt){
-        var defaults = {
-            "title":"通知",
-            "text":"恭喜你，中奖了！",
-            "btn":["confirm","cancel"]
-            },
-            opts = $.extend({},defaults,opt||{}),
-            dialogHtml = "";
-    }
-};
-
-
-//获取网址参数
-function getQueryString(name) {
-
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-    var r = window.location.search.substr(1).match(reg);
-    if (r != null)
-        return unescape(r[2]);
-    return null;
-
-}
+    };
 
 //异步菊花
 function loading(state, callback) {

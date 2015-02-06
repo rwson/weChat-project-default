@@ -71,4 +71,5 @@ $(function () {
     preloadImage(imgs, function () {
     });
 
+    jxTool.musicPlayer();
 });

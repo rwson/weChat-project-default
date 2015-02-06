@@ -283,4 +283,18 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 0;
 }
 
+.mp3controller{
+    width: 50px;
+    height: 50px;
+    top: 20px;
+    left: 20px;
+    background: url(../../img/common/ico_sound_on.png) no-repeat;
+    background-size: contain;
+}
+
+.mp3controller.pause{
+    background: url(../../img/common/ico_sound_off.png) no-repeat;
+    background-size: contain;
+}
+
 /*********  some tool classes end  ***********/
