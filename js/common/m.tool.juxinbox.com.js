@@ -336,7 +336,7 @@ var browser = {
                     "controller": true
                 },
                 opts = $.extend({}, defaults, opt || {}),
-                music = $("<audio id='mp3Player' style='display:none;width:0;height:0;opacity:0;' autoplay='autoplay'> + <source src='" + opts["music"] + "' type='audio/mpeg'>"),
+                music = $("<audio id='mp3Player' style='display:none;width:0;height:0;opacity:0;'> + <source src='" + opts["music"] + "' type='audio/mpeg'>"),
                 controller = $("<div class='mp3controller wait absolute'></div>");
             $("div.zoomer").append(music);
             if (opts["autoPlay"]) {
