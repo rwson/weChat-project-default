@@ -4,6 +4,13 @@
  *
  *  移动端的一些触摸事件兼容，依赖于jQuery或者zepto
  *
+ *  支持"swipe", "swipeLeft", "swipeRight", "swipeUp", "swipeDown", "tap", "longTap", "drag" 8重手势事件
+ *
+ *  ex:
+ *  $.swipe(function(ev){
+ *      callback()
+ *  });
+ *
  */
 (function ($) {
     var options, Events, Touch;
@@ -11,7 +18,7 @@
         x: 20,
         y: 20
     };
-    Events = ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'tap', 'longTap', 'drag'];
+    Events = ["swipe", "swipeLeft", "swipeRight", "swipeUp", "swipeDown", "tap", "longTap", "drag"];
     Events.forEach(function (eventName) {
         $.fn[eventName] = function () {
             var touch = new Touch($(this), eventName);

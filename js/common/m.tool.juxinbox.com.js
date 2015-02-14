@@ -90,7 +90,7 @@ var browser = {
          *
          */
         "isNull": function (obj) {
-            return (typeof obj == "undefined") || (obj == null);
+            return (typeof obj == "undefined") || (obj == null) || (obj.length == 0);
         },
 
         /**
