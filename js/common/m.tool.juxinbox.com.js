@@ -340,13 +340,15 @@ var browser = {
                 controller = $("<div class='mp3controller wait absolute'></div>");
             $("div.zoomer").append(music);
             if (opts["autoPlay"]) {
-                $(music).ready(function () {
-                    document.getElementById("mp3Player").play();
-                });
+                document.addEventListener("WeixinJSBridgeReady", function () {
+                    WeixinJSBridge.invoke('getNetworkType', {}, function (e) {
+                        $(music).get(0).play();
+                    });
+                }, false);
             }
             if (opts["controller"]) {
                 $("div.zoomer").append(controller);
-                $("div.mp3controller").click(function () {
+                $("div.mp3controller").bind("touchend",function () {
                     if (document.getElementById("mp3Player").paused) {
                         $(this).removeClass("pause");
                         document.getElementById("mp3Player").play();
