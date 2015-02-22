@@ -19,6 +19,7 @@
         y: 20
     };
     Events = ["swipe", "swipeLeft", "swipeRight", "swipeUp", "swipeDown", "tap", "longTap", "drag"];
+    //  存储手势名称到数组
     Events.forEach(function (eventName) {
         $.fn[eventName] = function () {
             var touch = new Touch($(this), eventName);
@@ -29,11 +30,13 @@
             return this.on(eventName, arguments[0]);
         }
     });
+    //  循环事件名称数组，绑定相应事件和回调
     Touch = function () {
         var status, ts, tm, te;
         this.target = arguments[0];
         this.e = arguments[1];
     };
+    //  建立Touch对象
     Touch.prototype.framework = function (e) {
         e.preventDefault();
         var events;
@@ -84,6 +87,7 @@
                 self.factory();
             })
     };
+    //  触摸开始，记录相关变量
     Touch.prototype.factory = function () {
         var x = Math.abs(this.te.x);
         var y = Math.abs(this.te.y);
@@ -120,5 +124,6 @@
             this.target.trigger(this.e);
             return;
         }
-    }
+    };
+    //  判断为具体某种事件
 })(window.jQuery || window.Zepto);
