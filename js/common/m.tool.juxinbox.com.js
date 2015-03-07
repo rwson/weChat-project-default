@@ -1,12 +1,6 @@
 /**
  *
- *  build by bsawang @ 2013-11-20
- *
- * history
- *  rwson  @ 2015-01-10 二次封装，修复bug
- *  rwson  @ 2015-01-17 增加animationEnd/transitionEnd事件的兼容处理
- *  rwson  @ 2015-02-04 修复bug，增加百度touch.js插件，单体模式创建jxTool对象，并提供属性方法
- *  rwson  @ 2015-02-06 修复bug，增加各类型浏览器判断、音乐播放器，并提供属性方法，简化调用
+ *  build by rwson @ 2015-01-10
  *
  *  一些工具方法
  *
@@ -358,6 +352,25 @@ var browser = {
                     }
                 });
             }
+        },
+
+        /**
+         *
+         * @param fetchUrl  Array/Object/String
+         *
+         * DNS预读取，前端解析优化
+         */
+        "dnsPreFetch":function(fetchUrl){
+            var fetchHtml = "";
+            if(Object.prototype.toString.call(fetchUrl) === "[object Array]" || Object.prototype.toString.call(fetchUrl) === "[object Object]"){
+                for(var i in fetchUrl){
+                    fetchUrl[i] && (fetchHtml += "<link type='dns-prefetch' href='"+ fetchUrl[i] +"'>");
+                }
+            }else if(Object.prototype.toString.call(fetchUrl) === "[object String]"){
+                fetchHtml += "<link type='dns-prefetch' href='"+ fetchUrl +"'>";
+            }
+            $("head").eq(0).append($(fetchHtml));
+            delete fetchHtml;
         }
     };
 

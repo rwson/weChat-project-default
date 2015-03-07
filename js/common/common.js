@@ -72,4 +72,8 @@ $(function () {
     });
 
     jxTool.musicPlayer();
+
+    $("body").swipeLeft(function(){
+        console.log("左滑")
+    });
 });
