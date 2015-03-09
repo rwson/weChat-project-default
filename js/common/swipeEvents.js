@@ -100,7 +100,7 @@
                 s = "longTap";
             }
         } else if (x < options.x && y > options.y) {
-            if (t < 250) {
+            if (t < 100) {
                 if (this.te.y > 0) {
                     s = "swipeDown";
                 } else {
@@ -110,7 +110,7 @@
                 s = "swipe";
             }
         } else if (y < options.y && x > options.x) {
-            if (t < 250) {
+            if (t < 100) {
                 if (this.te.x > 0) {
                     s = "swipeLeft";
                 } else {
