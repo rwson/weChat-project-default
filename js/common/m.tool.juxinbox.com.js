@@ -1,6 +1,12 @@
 /**
  *
- *  build by rwson @ 2015-01-10
+ *  build by bsawang @ 2013-11-20
+ *
+ * history
+ *  rwson  @ 2015-01-10 二次封装，修复bug
+ *  rwson  @ 2015-01-17 增加animationEnd/transitionEnd事件的兼容处理
+ *  rwson  @ 2015-02-04 修复bug，增加百度touch.js插件，单体模式创建jxTool对象，并提供属性方法
+ *  rwson  @ 2015-02-06 修复bug，增加各类型浏览器判断、音乐播放器，并提供属性方法，简化调用
  *
  *  一些工具方法
  *
@@ -352,25 +358,6 @@ var browser = {
                     }
                 });
             }
-        },
-
-        /**
-         *
-         * @param fetchUrl  Array/Object/String
-         *
-         * DNS预读取，前端解析优化
-         */
-        "dnsPreFetch":function(fetchUrl){
-            var fetchHtml = "";
-            if(Object.prototype.toString.call(fetchUrl) === "[object Array]" || Object.prototype.toString.call(fetchUrl) === "[object Object]"){
-                for(var i in fetchUrl){
-                    fetchUrl[i] && (fetchHtml += "<link type='dns-prefetch' href='"+ fetchUrl[i] +"'>");
-                }
-            }else if(Object.prototype.toString.call(fetchUrl) === "[object String]"){
-                fetchHtml += "<link type='dns-prefetch' href='"+ fetchUrl +"'>";
-            }
-            $("head").eq(0).append($(fetchHtml));
-            delete fetchHtml;
         }
     };
 
@@ -440,6 +427,49 @@ function gAcode(url, type, data, useLoading, callbackFunction) {
             alerw("访问出错，请刷新或重新登录");
         }
     });
+}
+
+
+function showShareTip(type) {
+    var pictype = type || "share";
+
+    var tipdom = $('<div id="jxtip">' +
+    '<img src="http://www.juxinbox.com/img/jxshare/jx' + pictype + '.png" />' +
+    '<a class="jxtiplogo"></a>' +
+    '</div>');
+
+    tipdom.css({
+        "width": "100%",
+        "height": $(document).outerHeight() + 390,
+        "backgroundColor": "rgba(102,102,102,0.98)",
+        "position": "absolute",
+        "left": "0",
+        "top": "0",
+        "zIndex": "99999"
+    });
+
+    $("img", tipdom).css({
+        "width": "100%",
+        "position": "absolute"
+    });
+
+    $(".jxtiplogo", tipdom).css({
+        "display": "block",
+        "width": "188px",
+        "height": "20px",
+        "backgroundImage": "url('http://www.juxinbox.com/img/jxshare/jxlogo.png')",
+        "backgroundSize": "contain",
+        "position": "absolute",
+        "marginLeft": "-94px",
+        "left": "50%",
+        "bottom": "40px"
+    });
+
+    tipdom.click(function () {
+        $(this).remove();
+    });
+
+    $("body").append(tipdom);
 }
 
 //自定义警告框
@@ -660,10 +690,10 @@ Date.prototype.format = function (format) {
 function screenalert(show, text) {
     if (show) {
         var alertdom = $('<div class="screenalert">' +
-            '<div class="mask">' +
-            '<div class="info">' +
-            text +
-            '</div></div></div>');
+        '<div class="mask">' +
+        '<div class="info">' +
+        text +
+        '</div></div></div>');
 
         if ($("body .screenalert")[0]) {
             $("div .screenalert").replaceWith(alertdom);
