@@ -760,7 +760,7 @@ $.fn.animateEnd = function (callback) {
             });
         }
     }
-};
+}
 
 
 /**
@@ -780,7 +780,7 @@ $.fn.transitionEnd = function (callback) {
             });
         }
     }
-};
+}
 
 /**
  *
