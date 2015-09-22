@@ -17,9 +17,49 @@
     options = {
         x: 20,
         y: 20
-    };
+    },
     Events = ["swipe", "swipeLeft", "swipeRight", "swipeUp", "swipeDown", "tap", "longTap", "drag"];
     //  存储手势名称到数组
+
+    var MSPointerType = {
+        "start": "MSPointerOver",
+        "move": "MSPointerMove",
+        "end": "MSPointerOut"
+    };
+    //  WP7 IE18
+
+    var pointerType = {
+        "start": "pointerover",
+        "move": "pointermove",
+        "end": "pointerout"
+    };
+    //  WP8 IE11
+
+    var touchType = {
+        "start": "touchstart",
+        "move": "touchmove",
+        "end": "touchend"
+    };
+    //  IOS/Android
+
+    var touchStart,touchMove,touchEnd;
+    //  触摸三大变量存储
+
+    if("ontouchstart" in window){
+        touchStart = touchType["start"];
+        touchMove = touchType["move"];
+        touchEnd = touchType["end"];
+    }else if(navigator.msPointerEnabled){
+        touchStart = MSPointerType["start"];
+        touchMove = MSPointerType["move"];
+        touchEnd = MSPointerType["end"];
+    }else if(!navigator.msPointerEnabled){
+        touchStart = MSPointerType["start"];
+        touchMove = MSPointerType["move"];
+        touchEnd = MSPointerType["end"];
+    }
+    //  根据不同情况判断绑定事件名
+
     Events.forEach(function (eventName) {
         $.fn[eventName] = function () {
             var touch = new Touch($(this), eventName);
@@ -31,12 +71,14 @@
         }
     });
     //  循环事件名称数组，绑定相应事件和回调
+
     Touch = function () {
         var status, ts, tm, te;
         this.target = arguments[0];
         this.e = arguments[1];
     };
     //  建立Touch对象
+
     Touch.prototype.framework = function (e) {
         e.preventDefault();
         var events;
@@ -44,9 +86,11 @@
         else events = e.originalEvent.touches[0];
         return events;
     };
+
     Touch.prototype.start = function () {
         var self = this;
-        self.target.on("touchstart",
+        //self.target.on("touchstart",
+        self.target.on(touchStart,
             function (event) {
                 event.preventDefault();
                 var temp = self.framework(event);
@@ -57,7 +101,7 @@
                     d: d.getTime()
                 };
             });
-        self.target.on("touchmove",
+        self.target.on(touchMove,
             function (event) {
                 event.preventDefault();
                 var temp = self.framework(event);
@@ -71,7 +115,7 @@
                     return;
                 }
             });
-        self.target.on("touchend",
+        self.target.on(touchEnd,
             function (event) {
                 event.preventDefault();
                 var d = new Date();
@@ -88,6 +132,7 @@
             })
     };
     //  触摸开始，记录相关变量
+
     Touch.prototype.factory = function () {
         var x = Math.abs(this.te.x);
         var y = Math.abs(this.te.y);
@@ -126,4 +171,5 @@
         }
     };
     //  判断为具体某种事件
+
 })(window.jQuery || window.Zepto);

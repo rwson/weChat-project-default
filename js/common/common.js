@@ -71,9 +71,7 @@ $(function () {
     preloadImage(imgs, function () {
     });
 
-    jxTool.musicPlayer();
-
-    $("body").swipeLeft(function(){
-        console.log("左滑")
+    $("body").tap(function(){
+        alert("fuck");
     });
 });

@@ -1,15 +1,8 @@
 /**
  *
- *  build by bsawang @ 2013-11-20
- *
- * history
- *  rwson  @ 2015-01-10 二次封装，修复bug
- *  rwson  @ 2015-01-17 增加animationEnd/transitionEnd事件的兼容处理
- *  rwson  @ 2015-02-04 修复bug，增加百度touch.js插件，单体模式创建jxTool对象，并提供属性方法
- *  rwson  @ 2015-02-06 修复bug，增加各类型浏览器判断、音乐播放器，并提供属性方法，简化调用
+ *  build by  @ 2014-12-20
  *
  *  一些工具方法
- *
  */
 
 if (!window.jxTool) {
@@ -20,7 +13,7 @@ if (!window.jxTool) {
 var browser = {
         versions: function () {
             var u = navigator.userAgent, app = navigator.appVersion;
-            return {//移动终端浏览器版本信息
+            return {                                    //移动终端浏览器版本信息
                 "trident": u.indexOf("Trident") > -1, //IE内核
                 "presto": u.indexOf("Presto") > -1, //opera内核
                 "webKit": u.indexOf("AppleWebKit") > -1, //苹果、谷歌内核
@@ -36,7 +29,7 @@ var browser = {
         language: (navigator.browserLanguage || navigator.language).toLowerCase()
     },
 
-    jxTool = {
+    tool = {
         /**
          *
          * @param key required
